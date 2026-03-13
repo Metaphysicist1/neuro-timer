@@ -2,17 +2,17 @@
 
 # 🧠 Neuro Timer
 
-**A productivity timer for Linux with focus protocols**
+**A productivity timer with focus protocols — Desktop & Web**
 
 _Optimize your work sessions with science-based timing techniques_
 
-https://neuro-timer.netlify.app/
-https://sourceforge.net/projects/neuro-timer/
-
 [![Python](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://python.org)
 [![GTK](https://img.shields.io/badge/GTK-3.0-green.svg)](https://gtk.org)
+[![Web](https://img.shields.io/badge/Web-PWA-purple.svg)](web/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Linux-orange.svg)](https://ubuntu.com)
+[![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Web-orange.svg)](https://ubuntu.com)
+
+**[🌐 Try Web Version](https://metaphysicist1.github.io/neuro-timer/)** · **[📦 Download AppImage](https://github.com/Metaphysicist1/neuro-timer/releases)**
 
 <img src="assets/screenshot.png" alt="Neuro Timer Screenshot" width="500">
 
@@ -22,7 +22,7 @@ https://sourceforge.net/projects/neuro-timer/
 
 ## 🎯 Overview
 
-Neuro Timer is a GTK3 desktop application for Linux that helps you optimize your work sessions using proven productivity protocols. Features include deep work timers, NSDR (Non-Sleep Deep Rest) with ambient audio, and brown noise for focus.
+Neuro Timer is a productivity application available as both a **GTK3 desktop app for Linux** and a **Progressive Web App (PWA)** for any browser. It helps you optimize your work sessions using proven productivity protocols including deep work timers, NSDR (Non-Sleep Deep Rest) with ambient audio, and brown noise for focus.
 
 ### Key Features
 
@@ -33,12 +33,26 @@ Neuro Timer is a GTK3 desktop application for Linux that helps you optimize your
 - **🌙 Evening Wind-Down** — Transition out of work mode
 - **📊 Session Tracking** — Monitor daily focus time
 - **🔔 Desktop Notifications** — Native Ubuntu/GNOME integration
+- **🌐 Web Version** — Works on any device with a browser
 
 ---
 
 ## 🚀 Quick Start
 
-### Installation
+### 🌐 Web Version (Instant)
+
+No installation needed — works on any device:
+
+**[→ Open Web App](https://metaphysicist1.github.io/neuro-timer/)**
+
+Features:
+- All 5 protocols with quick presets
+- Brown noise generator (Web Audio API)
+- NSDR video integration
+- Session tracking
+- PWA — installable on mobile/desktop
+
+### 🐧 Linux Desktop App
 
 ```bash
 # Clone the repository
@@ -112,19 +126,24 @@ cp your_brown_noise.mp3 assets/brown.mp3
 
 ## 🛠️ Technical Stack
 
-| Component     | Technology                |
-| ------------- | ------------------------- |
-| Language      | Python 3.6+               |
-| GUI Framework | GTK3 (PyGObject)          |
-| Threading     | Python `threading` module |
-| Audio         | mpv / ffplay / vlc        |
-| Notifications | libnotify                 |
+| Component     | Desktop (GTK)             | Web (PWA)                |
+| ------------- | ------------------------- | ------------------------ |
+| Language      | Python 3.6+               | Vanilla JavaScript       |
+| GUI Framework | GTK3 (PyGObject)          | HTML5 / CSS3             |
+| Threading     | Python `threading` module | Web Workers              |
+| Audio         | mpv / ffplay / vlc        | Web Audio API            |
+| Notifications | libnotify                 | Notification API         |
 
 ### Project Structure
 
 ```
 neuro-timer/
-├── neuro_timer.py      # Main application
+├── neuro_timer.py      # Desktop application (GTK3)
+├── web/                # Web application (PWA)
+│   ├── index.html      # Single-page app
+│   ├── manifest.json   # PWA manifest
+│   ├── sw.js           # Service worker
+│   └── icon-*.png      # App icons
 ├── assets/
 │   ├── icon.png        # App icon
 │   ├── nsdr.mp3        # NSDR audio (add your own)
@@ -184,6 +203,8 @@ Contributions welcome! Ideas:
 - [ ] Custom protocol builder
 - [ ] Keyboard shortcuts
 - [ ] System tray integration
+- [ ] Mobile app (React Native)
+- [ ] Sync across devices
 
 ---
 
@@ -210,5 +231,9 @@ MIT License — see [LICENSE](LICENSE) for details.
 _Built with ❤️ for focused work_
 
 **⭐ Star this repo if you find it useful!**
+
+| Desktop | Web |
+|---------|-----|
+| ![GTK](https://img.shields.io/badge/GTK3-Linux-green) | ![PWA](https://img.shields.io/badge/PWA-Any%20Browser-purple) |
 
 </div>
