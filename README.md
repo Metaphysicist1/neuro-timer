@@ -79,13 +79,14 @@ sudo apt install mpv
 
 Audio files must be added manually. Recommended free sources:
 
-| Source | License | Link |
-|--------|---------|------|
-| Freesound | Creative Commons | [freesound.org](https://freesound.org) |
-| Pixabay | Royalty-free | [pixabay.com/music](https://pixabay.com/music) |
-| Incompetech | CC BY | [incompetech.com](https://incompetech.com) |
+| Source      | License          | Link                                           |
+| ----------- | ---------------- | ---------------------------------------------- |
+| Freesound   | Creative Commons | [freesound.org](https://freesound.org)         |
+| Pixabay     | Royalty-free     | [pixabay.com/music](https://pixabay.com/music) |
+| Incompetech | CC BY            | [incompetech.com](https://incompetech.com)     |
 
 **Setup:**
+
 ```bash
 # Add your audio files
 cp your_relaxation.mp3 assets/nsdr.mp3
@@ -187,7 +188,7 @@ Contributions welcome! Ideas:
 
 MIT License — see [LICENSE](LICENSE) for details.
 
-> **Note:** Audio files in `assets/` are excluded from the MIT license and are 
+> **Note:** Audio files in `assets/` are excluded from the MIT license and are
 > for personal use only. See LICENSE file for full disclaimer.
 
 ---
@@ -196,8 +197,8 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 **[Your Name]**
 
-- GitHub: [@username](https://github.com/username)
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
+- GitHub: [@Metaphysicist1](https://github.com/Metaphysicist1)
+- LinkedIn: [Edgar Abasov](https://www.linkedin.com/in/edgar-abasov/)
 
 ---
 
