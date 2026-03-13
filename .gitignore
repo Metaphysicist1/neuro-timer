@@ -1,0 +1,30 @@
+# Audio files - not for redistribution
+assets/*.mp3
+assets/*.wav
+assets/*.ogg
+assets/*.flac
+
+# Keep the icon
+!assets/icon.png
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.so
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+venv/
+.venv/
+env/
