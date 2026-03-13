@@ -1,722 +1,801 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Neuro Timer - Focus & Productivity</title>
-    <meta name="description" content="A productivity timer with focus protocols, NSDR sessions, and ambient audio.">
-    <meta name="theme-color" content="#0D1117">
-    
+
+    <meta
+      name="description"
+      content="A productivity timer with focus protocols, NSDR sessions, and ambient audio."
+    />
+    <meta name="theme-color" content="#0D1117" />
+
     <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="icon-192.png">
-    
+    <link rel="icon" type="image/png" href="icon-192.png" />
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        :root {
-            --bg: #0D1117;
-            --surface: #161B22;
-            --surface-light: #21262D;
-            --accent: #38BDF8;
-            --accent-hover: #0EA5E9;
-            --text: #E2E8F0;
-            --text-dim: #94A3B8;
-            --success: #10B981;
-            --success-hover: #059669;
-            --warning: #F59E0B;
-            --warning-hover: #D97706;
-            --error: #EF4444;
-            --error-hover: #DC2626;
-            --amber: #FDBA74;
-            --border: #30363D;
-        }
+      :root {
+        --bg: #0d1117;
+        --surface: #161b22;
+        --surface-light: #21262d;
+        --accent: #38bdf8;
+        --accent-hover: #0ea5e9;
+        --text: #e2e8f0;
+        --text-dim: #94a3b8;
+        --success: #10b981;
+        --success-hover: #059669;
+        --warning: #f59e0b;
+        --warning-hover: #d97706;
+        --error: #ef4444;
+        --error-hover: #dc2626;
+        --amber: #fdba74;
+        --border: #30363d;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
 
-        .container {
-            max-width: 600px;
-            width: 100%;
-        }
+      .container {
+        max-width: 600px;
+        width: 100%;
+      }
 
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+      /* Header */
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
 
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
+      .header h1 {
+        font-size: 2rem;
+        margin-bottom: 5px;
+      }
 
-        .header p {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-        }
+      .header p {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+      }
 
-        /* Protocol Buttons */
-        .protocols {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
+      /* Protocol Buttons */
+      .protocols {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
 
-        .protocol-btn {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
+      .protocol-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
 
-        .protocol-btn:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
+      .protocol-btn:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
 
-        .protocol-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
+      .protocol-btn.active {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
 
-        /* Timer Display */
-        .timer-section {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 40px 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+      /* Timer Display */
+      .timer-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 40px 20px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
 
-        .protocol-name {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
+      .protocol-name {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+      }
 
+      .timer-display {
+        font-size: 4rem;
+        font-weight: bold;
+        font-family: "Courier New", monospace;
+        color: var(--accent);
+        margin-bottom: 15px;
+        transition: color 0.3s;
+      }
+
+      .timer-display.amber {
+        color: var(--amber);
+      }
+
+      .status {
+        color: var(--text-dim);
+        font-size: 0.85rem;
+      }
+
+      /* Presets */
+      .presets {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+      }
+
+      .preset-btn {
+        background: var(--surface-light);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+      }
+
+      .preset-btn:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+
+      /* Control Buttons */
+      .controls {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+      }
+
+      .control-btn {
+        padding: 14px 28px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: white;
+      }
+
+      .start-btn {
+        background: var(--success);
+      }
+      .start-btn:hover {
+        background: var(--success-hover);
+      }
+      .start-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .pause-btn {
+        background: var(--warning);
+      }
+      .pause-btn:hover {
+        background: var(--warning-hover);
+      }
+      .pause-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .reset-btn {
+        background: var(--error);
+      }
+      .reset-btn:hover {
+        background: var(--error-hover);
+      }
+
+      /* Audio Section */
+      .audio-section {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      .audio-section h3 {
+        font-size: 0.9rem;
+        color: var(--text-dim);
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .audio-controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .audio-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      .audio-toggle input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .nsdr-btn {
+        background: var(--surface-light);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+      }
+
+      .nsdr-btn:hover {
+        background: var(--amber);
+        border-color: var(--amber);
+        color: var(--bg);
+      }
+
+      /* Stats */
+      .stats {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .stat {
+        text-align: center;
+      }
+
+      .stat-label {
+        color: var(--text-dim);
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--accent);
+        font-family: "Courier New", monospace;
+      }
+
+      /* NSDR Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: var(--surface);
+        border-radius: 16px;
+        padding: 20px;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .modal-header h2 {
+        font-size: 1.2rem;
+      }
+
+      .close-btn {
+        background: var(--error);
+        border: none;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        color: var(--text-dim);
+        font-size: 0.8rem;
+        margin-top: auto;
+        padding-top: 20px;
+      }
+
+      .footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      /* Responsive */
+      @media (max-width: 480px) {
         .timer-display {
-            font-size: 4rem;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            color: var(--accent);
-            margin-bottom: 15px;
-            transition: color 0.3s;
+          font-size: 3rem;
         }
 
-        .timer-display.amber {
-            color: var(--amber);
-        }
-
-        .status {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-        }
-
-        /* Presets */
-        .presets {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .preset-btn {
-            background: var(--surface-light);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-
-        .preset-btn:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-
-        /* Control Buttons */
         .controls {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+          flex-direction: column;
         }
 
         .control-btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: white;
+          width: 100%;
         }
-
-        .start-btn { background: var(--success); }
-        .start-btn:hover { background: var(--success-hover); }
-        .start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .pause-btn { background: var(--warning); }
-        .pause-btn:hover { background: var(--warning-hover); }
-        .pause-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .reset-btn { background: var(--error); }
-        .reset-btn:hover { background: var(--error-hover); }
-
-        /* Audio Section */
-        .audio-section {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .audio-section h3 {
-            font-size: 0.9rem;
-            color: var(--text-dim);
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .audio-controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .audio-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .audio-toggle input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .nsdr-btn {
-            background: var(--surface-light);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .nsdr-btn:hover {
-            background: var(--amber);
-            border-color: var(--amber);
-            color: var(--bg);
-        }
-
-        /* Stats */
-        .stats {
-            display: flex;
-            gap: 40px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-label {
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent);
-            font-family: 'Courier New', monospace;
-        }
-
-        /* NSDR Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 800px;
-            width: 100%;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .modal-header h2 {
-            font-size: 1.2rem;
-        }
-
-        .close-btn {
-            background: var(--error);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            margin-top: auto;
-            padding-top: 20px;
-        }
-
-        .footer a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .timer-display {
-                font-size: 3rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .control-btn {
-                width: 100%;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>🧠 Neuro Timer</h1>
-            <p>Focus & Productivity Protocols</p>
-        </div>
+      <!-- Header -->
+      <div class="header">
+        <h1>🧠 Neuro Timer</h1>
+        <p>Focus & Productivity Protocols</p>
+      </div>
 
-        <!-- Protocol Buttons -->
-        <div class="protocols">
-            <button class="protocol-btn active" data-protocol="deep_work" data-time="90">🎯 Deep Work</button>
-            <button class="protocol-btn" data-protocol="nsdr" data-time="10">🧘 NSDR</button>
-            <button class="protocol-btn" data-protocol="focus" data-time="1">🌊 Focus</button>
-            <button class="protocol-btn" data-protocol="morning" data-time="10">☀️ Morning</button>
-            <button class="protocol-btn" data-protocol="evening" data-time="15">🌙 Evening</button>
-        </div>
+      <!-- Protocol Buttons -->
+      <div class="protocols">
+        <button
+          class="protocol-btn active"
+          data-protocol="deep_work"
+          data-time="90"
+        >
+          🎯 Deep Work
+        </button>
+        <button class="protocol-btn" data-protocol="nsdr" data-time="10">
+          🧘 NSDR
+        </button>
+        <button class="protocol-btn" data-protocol="focus" data-time="1">
+          🌊 Focus
+        </button>
+        <button class="protocol-btn" data-protocol="morning" data-time="10">
+          ☀️ Morning
+        </button>
+        <button class="protocol-btn" data-protocol="evening" data-time="15">
+          🌙 Evening
+        </button>
+      </div>
 
-        <!-- Timer Section -->
-        <div class="timer-section">
-            <div class="protocol-name" id="protocolName">Deep Work Protocol</div>
-            <div class="timer-display" id="timerDisplay">01:30:00</div>
-            <div class="status" id="status">Ready for deep work session</div>
-        </div>
+      <!-- Timer Section -->
+      <div class="timer-section">
+        <div class="protocol-name" id="protocolName">Deep Work Protocol</div>
+        <div class="timer-display" id="timerDisplay">01:30:00</div>
+        <div class="status" id="status">Ready for deep work session</div>
+      </div>
 
-        <!-- Presets -->
-        <div class="presets">
-            <span style="color: var(--text-dim); font-size: 0.85rem;">Quick set:</span>
-            <button class="preset-btn" data-minutes="5">5m</button>
-            <button class="preset-btn" data-minutes="10">10m</button>
-            <button class="preset-btn" data-minutes="25">25m</button>
-            <button class="preset-btn" data-minutes="45">45m</button>
-            <button class="preset-btn" data-minutes="90">90m</button>
-        </div>
+      <!-- Presets -->
+      <div class="presets">
+        <span style="color: var(--text-dim); font-size: 0.85rem"
+          >Quick set:</span
+        >
+        <button class="preset-btn" data-minutes="5">5m</button>
+        <button class="preset-btn" data-minutes="10">10m</button>
+        <button class="preset-btn" data-minutes="25">25m</button>
+        <button class="preset-btn" data-minutes="45">45m</button>
+        <button class="preset-btn" data-minutes="90">90m</button>
+      </div>
 
-        <!-- Controls -->
-        <div class="controls">
-            <button class="control-btn start-btn" id="startBtn">▶ Start</button>
-            <button class="control-btn pause-btn" id="pauseBtn" disabled>⏸ Pause</button>
-            <button class="control-btn reset-btn" id="resetBtn">⏹ Reset</button>
-        </div>
+      <!-- Controls -->
+      <div class="controls">
+        <button class="control-btn start-btn" id="startBtn">▶ Start</button>
+        <button class="control-btn pause-btn" id="pauseBtn" disabled>
+          ⏸ Pause
+        </button>
+        <button class="control-btn reset-btn" id="resetBtn">⏹ Reset</button>
+      </div>
 
-        <!-- Audio Section -->
-        <div class="audio-section">
-            <h3>🎧 Audio</h3>
-            <div class="audio-controls">
-                <label class="audio-toggle">
-                    <input type="checkbox" id="brownNoiseToggle">
-                    <span>Brown Noise</span>
-                </label>
-                <button class="nsdr-btn" id="nsdrVideoBtn">▶ Start NSDR Session</button>
-            </div>
+      <!-- Audio Section -->
+      <div class="audio-section">
+        <h3>🎧 Audio</h3>
+        <div class="audio-controls">
+          <label class="audio-toggle">
+            <input type="checkbox" id="brownNoiseToggle" />
+            <span>Brown Noise</span>
+          </label>
+          <button class="nsdr-btn" id="nsdrVideoBtn">
+            ▶ Start NSDR Session
+          </button>
         </div>
+      </div>
 
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-label">Sessions</div>
-                <div class="stat-value" id="sessionCount">0</div>
-            </div>
-            <div class="stat">
-                <div class="stat-label">Focus Time</div>
-                <div class="stat-value" id="focusTime">0h 0m</div>
-            </div>
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Sessions</div>
+          <div class="stat-value" id="sessionCount">0</div>
         </div>
+        <div class="stat">
+          <div class="stat-label">Focus Time</div>
+          <div class="stat-value" id="focusTime">0h 0m</div>
+        </div>
+      </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>Built with ❤️ | <a href="https://github.com/Metaphysicist1/neuro-timer" target="_blank">GitHub</a></p>
-        </div>
+      <!-- Footer -->
+      <div class="footer">
+        <a
+          href="https://www.producthunt.com/products/neuro-timer?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-neuro-timer"
+          target="_blank"
+          rel="noopener noreferrer"
+          ><img
+            alt="Neuro Timer - A productivity timer with focus protocols — Desktop &amp; Web | Product Hunt"
+            width="250"
+            height="54"
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1097812&amp;theme=light&amp;t=1773439226590"
+        /></a>
+      </div>
     </div>
 
     <!-- NSDR Video Modal -->
     <div class="modal" id="nsdrModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>🧘 NSDR Session</h2>
-                <button class="close-btn" id="closeModal">×</button>
-            </div>
-            <div class="video-container">
-                <iframe id="nsdrVideo" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>🧘 NSDR Session</h2>
+          <button class="close-btn" id="closeModal">×</button>
         </div>
+        <div class="video-container">
+          <iframe
+            id="nsdrVideo"
+            src=""
+            frameborder="0"
+            allow="
+              accelerometer;
+              autoplay;
+              clipboard-write;
+              encrypted-media;
+              gyroscope;
+              picture-in-picture;
+            "
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
     </div>
 
     <script>
-        // State
-        let timerRunning = false;
-        let timerPaused = false;
-        let remainingSeconds = 90 * 60;
-        let totalSeconds = 90 * 60;
-        let currentProtocol = 'deep_work';
-        let sessionCount = 0;
-        let totalFocusMinutes = 0;
-        let timerInterval = null;
-        let brownNoiseContext = null;
-        let brownNoiseNode = null;
+      // State
+      let timerRunning = false;
+      let timerPaused = false;
+      let remainingSeconds = 90 * 60;
+      let totalSeconds = 90 * 60;
+      let currentProtocol = "deep_work";
+      let sessionCount = 0;
+      let totalFocusMinutes = 0;
+      let timerInterval = null;
+      let brownNoiseContext = null;
+      let brownNoiseNode = null;
 
-        // Elements
-        const timerDisplay = document.getElementById('timerDisplay');
-        const protocolName = document.getElementById('protocolName');
-        const status = document.getElementById('status');
-        const startBtn = document.getElementById('startBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const sessionCountEl = document.getElementById('sessionCount');
-        const focusTimeEl = document.getElementById('focusTime');
-        const brownNoiseToggle = document.getElementById('brownNoiseToggle');
-        const nsdrModal = document.getElementById('nsdrModal');
-        const nsdrVideo = document.getElementById('nsdrVideo');
+      // Elements
+      const timerDisplay = document.getElementById("timerDisplay");
+      const protocolName = document.getElementById("protocolName");
+      const status = document.getElementById("status");
+      const startBtn = document.getElementById("startBtn");
+      const pauseBtn = document.getElementById("pauseBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const sessionCountEl = document.getElementById("sessionCount");
+      const focusTimeEl = document.getElementById("focusTime");
+      const brownNoiseToggle = document.getElementById("brownNoiseToggle");
+      const nsdrModal = document.getElementById("nsdrModal");
+      const nsdrVideo = document.getElementById("nsdrVideo");
 
-        // Protocol names
-        const protocolNames = {
-            deep_work: 'Deep Work Protocol',
-            nsdr: 'NSDR Session (10 min)',
-            focus: 'Focus Reset',
-            morning: 'Morning Protocol',
-            evening: 'Evening Wind-Down'
-        };
+      // Protocol names
+      const protocolNames = {
+        deep_work: "Deep Work Protocol",
+        nsdr: "NSDR Session (10 min)",
+        focus: "Focus Reset",
+        morning: "Morning Protocol",
+        evening: "Evening Wind-Down",
+      };
 
-        // Format time
-        function formatTime(seconds) {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = seconds % 60;
-            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      // Format time
+      function formatTime(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+      }
+
+      // Set time
+      function setTime(minutes) {
+        totalSeconds = minutes * 60;
+        remainingSeconds = totalSeconds;
+        timerDisplay.textContent = formatTime(remainingSeconds);
+      }
+
+      // Update display
+      function updateDisplay() {
+        timerDisplay.textContent = formatTime(remainingSeconds);
+      }
+
+      // Protocol buttons
+      document.querySelectorAll(".protocol-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".protocol-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          currentProtocol = btn.dataset.protocol;
+          const minutes = parseInt(btn.dataset.time);
+
+          protocolName.textContent = protocolNames[currentProtocol];
+          setTime(minutes);
+
+          // Theme change for relaxation modes
+          if (["nsdr", "evening"].includes(currentProtocol)) {
+            timerDisplay.classList.add("amber");
+            status.textContent = "🧘 Relaxation mode";
+          } else {
+            timerDisplay.classList.remove("amber");
+            status.textContent = `Ready for ${protocolNames[currentProtocol]}`;
+          }
+        });
+      });
+
+      // Preset buttons
+      document.querySelectorAll(".preset-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          setTime(parseInt(btn.dataset.minutes));
+        });
+      });
+
+      // Start timer
+      startBtn.addEventListener("click", () => {
+        if (timerRunning) return;
+
+        timerRunning = true;
+        timerPaused = false;
+
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        status.textContent = "🚀 Session started!";
+
+        timerInterval = setInterval(() => {
+          if (!timerPaused && remainingSeconds > 0) {
+            remainingSeconds--;
+            updateDisplay();
+          }
+
+          if (remainingSeconds <= 0) {
+            timerComplete();
+          }
+        }, 1000);
+      });
+
+      // Pause timer
+      pauseBtn.addEventListener("click", () => {
+        timerPaused = !timerPaused;
+
+        if (timerPaused) {
+          pauseBtn.textContent = "▶ Resume";
+          status.textContent = "⏸ Paused";
+        } else {
+          pauseBtn.textContent = "⏸ Pause";
+          status.textContent = "▶ Resumed";
+        }
+      });
+
+      // Reset timer
+      resetBtn.addEventListener("click", () => {
+        timerRunning = false;
+        timerPaused = false;
+        clearInterval(timerInterval);
+
+        setTime(90);
+        currentProtocol = "deep_work";
+
+        document
+          .querySelectorAll(".protocol-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document
+          .querySelector('[data-protocol="deep_work"]')
+          .classList.add("active");
+
+        protocolName.textContent = "Deep Work Protocol";
+        timerDisplay.classList.remove("amber");
+        status.textContent = "Ready for deep work session";
+
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        pauseBtn.textContent = "⏸ Pause";
+      });
+
+      // Timer complete
+      function timerComplete() {
+        timerRunning = false;
+        clearInterval(timerInterval);
+
+        sessionCount++;
+        sessionCountEl.textContent = sessionCount;
+
+        // Track focus time for work protocols
+        if (["deep_work", "morning", "focus"].includes(currentProtocol)) {
+          totalFocusMinutes += Math.floor(totalSeconds / 60);
+          const h = Math.floor(totalFocusMinutes / 60);
+          const m = totalFocusMinutes % 60;
+          focusTimeEl.textContent = `${h}h ${m}m`;
         }
 
-        // Set time
-        function setTime(minutes) {
-            totalSeconds = minutes * 60;
-            remainingSeconds = totalSeconds;
-            timerDisplay.textContent = formatTime(remainingSeconds);
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        pauseBtn.textContent = "⏸ Pause";
+        status.textContent = "🎉 Session complete! Take a break.";
+
+        // Notification
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("Neuro Timer", {
+            body: "Session complete! Time for a break.",
+            icon: "icon-192.png",
+          });
         }
 
-        // Update display
-        function updateDisplay() {
-            timerDisplay.textContent = formatTime(remainingSeconds);
+        // Sound
+        playCompletionSound();
+      }
+
+      // Completion sound
+      function playCompletionSound() {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.frequency.value = 800;
+        osc.type = "sine";
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.5);
+      }
+
+      // Brown noise
+      brownNoiseToggle.addEventListener("change", () => {
+        if (brownNoiseToggle.checked) {
+          startBrownNoise();
+          status.textContent = "🌊 Brown noise playing";
+        } else {
+          stopBrownNoise();
+          status.textContent = "🌊 Brown noise stopped";
+        }
+      });
+
+      function startBrownNoise() {
+        brownNoiseContext = new (
+          window.AudioContext || window.webkitAudioContext
+        )();
+        const bufferSize = 2 * brownNoiseContext.sampleRate;
+        const noiseBuffer = brownNoiseContext.createBuffer(
+          1,
+          bufferSize,
+          brownNoiseContext.sampleRate,
+        );
+        const output = noiseBuffer.getChannelData(0);
+
+        let lastOut = 0.0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          output[i] = (lastOut + 0.02 * white) / 1.02;
+          lastOut = output[i];
+          output[i] *= 3.5;
         }
 
-        // Protocol buttons
-        document.querySelectorAll('.protocol-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.protocol-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                currentProtocol = btn.dataset.protocol;
-                const minutes = parseInt(btn.dataset.time);
-                
-                protocolName.textContent = protocolNames[currentProtocol];
-                setTime(minutes);
-                
-                // Theme change for relaxation modes
-                if (['nsdr', 'evening'].includes(currentProtocol)) {
-                    timerDisplay.classList.add('amber');
-                    status.textContent = '🧘 Relaxation mode';
-                } else {
-                    timerDisplay.classList.remove('amber');
-                    status.textContent = `Ready for ${protocolNames[currentProtocol]}`;
-                }
-            });
-        });
+        brownNoiseNode = brownNoiseContext.createBufferSource();
+        brownNoiseNode.buffer = noiseBuffer;
+        brownNoiseNode.loop = true;
 
-        // Preset buttons
-        document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                setTime(parseInt(btn.dataset.minutes));
-            });
-        });
+        const gainNode = brownNoiseContext.createGain();
+        gainNode.gain.value = 0.5;
 
-        // Start timer
-        startBtn.addEventListener('click', () => {
-            if (timerRunning) return;
-            
-            timerRunning = true;
-            timerPaused = false;
-            
-            startBtn.disabled = true;
-            pauseBtn.disabled = false;
-            status.textContent = '🚀 Session started!';
-            
-            timerInterval = setInterval(() => {
-                if (!timerPaused && remainingSeconds > 0) {
-                    remainingSeconds--;
-                    updateDisplay();
-                }
-                
-                if (remainingSeconds <= 0) {
-                    timerComplete();
-                }
-            }, 1000);
-        });
+        brownNoiseNode.connect(gainNode);
+        gainNode.connect(brownNoiseContext.destination);
+        brownNoiseNode.start();
+      }
 
-        // Pause timer
-        pauseBtn.addEventListener('click', () => {
-            timerPaused = !timerPaused;
-            
-            if (timerPaused) {
-                pauseBtn.textContent = '▶ Resume';
-                status.textContent = '⏸ Paused';
-            } else {
-                pauseBtn.textContent = '⏸ Pause';
-                status.textContent = '▶ Resumed';
-            }
-        });
-
-        // Reset timer
-        resetBtn.addEventListener('click', () => {
-            timerRunning = false;
-            timerPaused = false;
-            clearInterval(timerInterval);
-            
-            setTime(90);
-            currentProtocol = 'deep_work';
-            
-            document.querySelectorAll('.protocol-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector('[data-protocol="deep_work"]').classList.add('active');
-            
-            protocolName.textContent = 'Deep Work Protocol';
-            timerDisplay.classList.remove('amber');
-            status.textContent = 'Ready for deep work session';
-            
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            pauseBtn.textContent = '⏸ Pause';
-        });
-
-        // Timer complete
-        function timerComplete() {
-            timerRunning = false;
-            clearInterval(timerInterval);
-            
-            sessionCount++;
-            sessionCountEl.textContent = sessionCount;
-            
-            // Track focus time for work protocols
-            if (['deep_work', 'morning', 'focus'].includes(currentProtocol)) {
-                totalFocusMinutes += Math.floor(totalSeconds / 60);
-                const h = Math.floor(totalFocusMinutes / 60);
-                const m = totalFocusMinutes % 60;
-                focusTimeEl.textContent = `${h}h ${m}m`;
-            }
-            
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            pauseBtn.textContent = '⏸ Pause';
-            status.textContent = '🎉 Session complete! Take a break.';
-            
-            // Notification
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('Neuro Timer', {
-                    body: 'Session complete! Time for a break.',
-                    icon: 'icon-192.png'
-                });
-            }
-            
-            // Sound
-            playCompletionSound();
+      function stopBrownNoise() {
+        if (brownNoiseNode) {
+          brownNoiseNode.stop();
+          brownNoiseNode = null;
         }
-
-        // Completion sound
-        function playCompletionSound() {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            
-            osc.frequency.value = 800;
-            osc.type = 'sine';
-            gain.gain.setValueAtTime(0.3, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-            
-            osc.start(ctx.currentTime);
-            osc.stop(ctx.currentTime + 0.5);
+        if (brownNoiseContext) {
+          brownNoiseContext.close();
+          brownNoiseContext = null;
         }
+      }
 
-        // Brown noise
-        brownNoiseToggle.addEventListener('change', () => {
-            if (brownNoiseToggle.checked) {
-                startBrownNoise();
-                status.textContent = '🌊 Brown noise playing';
-            } else {
-                stopBrownNoise();
-                status.textContent = '🌊 Brown noise stopped';
-            }
-        });
+      // NSDR Video
+      document.getElementById("nsdrVideoBtn").addEventListener("click", () => {
+        nsdrVideo.src =
+          "https://www.youtube.com/embed/KHIbgSN2qAU?autoplay=1&start=10";
+        nsdrModal.classList.add("active");
+      });
 
-        function startBrownNoise() {
-            brownNoiseContext = new (window.AudioContext || window.webkitAudioContext)();
-            const bufferSize = 2 * brownNoiseContext.sampleRate;
-            const noiseBuffer = brownNoiseContext.createBuffer(1, bufferSize, brownNoiseContext.sampleRate);
-            const output = noiseBuffer.getChannelData(0);
-            
-            let lastOut = 0.0;
-            for (let i = 0; i < bufferSize; i++) {
-                const white = Math.random() * 2 - 1;
-                output[i] = (lastOut + (0.02 * white)) / 1.02;
-                lastOut = output[i];
-                output[i] *= 3.5;
-            }
-            
-            brownNoiseNode = brownNoiseContext.createBufferSource();
-            brownNoiseNode.buffer = noiseBuffer;
-            brownNoiseNode.loop = true;
-            
-            const gainNode = brownNoiseContext.createGain();
-            gainNode.gain.value = 0.5;
-            
-            brownNoiseNode.connect(gainNode);
-            gainNode.connect(brownNoiseContext.destination);
-            brownNoiseNode.start();
+      document.getElementById("closeModal").addEventListener("click", () => {
+        nsdrModal.classList.remove("active");
+        nsdrVideo.src = "";
+      });
+
+      nsdrModal.addEventListener("click", (e) => {
+        if (e.target === nsdrModal) {
+          nsdrModal.classList.remove("active");
+          nsdrVideo.src = "";
         }
+      });
 
-        function stopBrownNoise() {
-            if (brownNoiseNode) {
-                brownNoiseNode.stop();
-                brownNoiseNode = null;
-            }
-            if (brownNoiseContext) {
-                brownNoiseContext.close();
-                brownNoiseContext = null;
-            }
-        }
+      // Request notification permission
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
 
-        // NSDR Video
-        document.getElementById('nsdrVideoBtn').addEventListener('click', () => {
-            nsdrVideo.src = 'https://www.youtube.com/embed/KHIbgSN2qAU?autoplay=1&start=10';
-            nsdrModal.classList.add('active');
-        });
-
-        document.getElementById('closeModal').addEventListener('click', () => {
-            nsdrModal.classList.remove('active');
-            nsdrVideo.src = '';
-        });
-
-        nsdrModal.addEventListener('click', (e) => {
-            if (e.target === nsdrModal) {
-                nsdrModal.classList.remove('active');
-                nsdrVideo.src = '';
-            }
-        });
-
-        // Request notification permission
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
-
-        // Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(() => {});
-        }
+      // Service Worker for PWA
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
     </script>
-</body>
+  </body>
 </html>
