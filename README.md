@@ -6,6 +6,9 @@
 
 _Optimize your work sessions with science-based timing techniques_
 
+https://neuro-timer.netlify.app/
+https://sourceforge.net/projects/neuro-timer/
+
 [![Python](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://python.org)
 [![GTK](https://img.shields.io/badge/GTK-3.0-green.svg)](https://gtk.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
