@@ -28,3 +28,12 @@ Thumbs.db
 venv/
 .venv/
 env/
+
+# Build artifacts
+AppDir/
+*.AppImage
+appimagetool*
+*.snap
+parts/
+prime/
+stage/

@@ -293,6 +293,12 @@ class NeuroTimer(Gtk.Window):
         self.brown_noise_check.connect("toggled", self.on_brown_noise_toggled)
         audio_frame.pack_start(self.brown_noise_check, False, False, 5)
         
+        # NSDR Video button
+        nsdr_video_btn = Gtk.Button(label="▶ Start NSDR Session")
+        nsdr_video_btn.get_style_context().add_class("preset-btn")
+        nsdr_video_btn.connect("clicked", self.on_nsdr_video_clicked)
+        audio_frame.pack_start(nsdr_video_btn, False, False, 10)
+        
         # Stats row
         stats_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40)
         stats_box.set_halign(Gtk.Align.CENTER)
@@ -421,6 +427,13 @@ class NeuroTimer(Gtk.Window):
         self.current_protocol = "deep_work"
         self.protocol_label.set_text("Deep Work Protocol")
         self.status_label.set_text("Ready for deep work session")
+    
+    def on_nsdr_video_clicked(self, button):
+        """Open official NSDR video on YouTube"""
+        import webbrowser
+        nsdr_url = "https://www.youtube.com/watch?v=KHIbgSN2qAU&t=10s"
+        webbrowser.open(nsdr_url)
+        self.status_label.set_text("🧘 NSDR video opened in browser")
     
     def run_timer(self):
         """Timer countdown loop (runs in thread)"""
@@ -590,10 +603,8 @@ def main():
     """Main entry point"""
     os.environ['NO_AT_BRIDGE'] = '1'
     
-    # Create assets directory if needed
-    assets_dir = os.path.join(SCRIPT_DIR, "assets")
-    if not os.path.exists(assets_dir):
-        os.makedirs(assets_dir)
+    # Don't try to create assets dir (AppImage is read-only)
+    # Assets should already exist or app works without them
     
     app = NeuroTimer()
     app.show_all()
