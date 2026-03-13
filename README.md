@@ -198,7 +198,7 @@ MIT License — see [LICENSE](LICENSE) for details.
 
 ## 👨‍💻 Author
 
-**[Your Name]**
+**Edgar Abasov**
 
 - GitHub: [@Metaphysicist1](https://github.com/Metaphysicist1)
 - LinkedIn: [Edgar Abasov](https://www.linkedin.com/in/edgar-abasov/)
